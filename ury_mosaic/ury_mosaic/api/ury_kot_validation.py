@@ -4,10 +4,11 @@ import json
 from frappe.utils import get_datetime, datetime
 
 
+@frappe.whitelist()
 def kotValidationThread():
     current_datetime = get_datetime()
     one_minute_ago = current_datetime - datetime.timedelta(minutes=1)
-    five_minutes_ago = current_datetime - datetime.timedelta(minutes=5)
+    five_minutes_ago = current_datetime - datetime.timedelta(minutes=300)
 
     # Get a list of unprocessed invoices within the last 5 minutes
     invoice_list = get_unprocessed_invoices(five_minutes_ago, one_minute_ago)
@@ -40,7 +41,7 @@ def process_invoice(invoice):
     # Determine the owner based on the restaurant table
     owner = waiter if not invoice.restaurant_table else waiter
 
-    kot_naming_series = pos_profile.kot_naming_series
+    kot_naming_series = pos_profile.custom_kot_naming_series
     kot_list = frappe.get_list(
         "URY KOT",
         filters={"creation": (">", posInvoice.creation), "invoice": posInvoice.name},
@@ -81,10 +82,7 @@ def process_invoice(invoice):
 
 # Function to fetch production units for a branch
 def get_productions_for_branch(branch):
-    return frappe.get_all(
-        "URY Production Unit", filters={"branch": branch}, fields=["name", "item_groups"]
-    )
-
+    return frappe.get_all("URY Production Unit", filters={"branch": branch})
 
 # Function to create a KOT
 def create_kot(

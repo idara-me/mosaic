@@ -249,4 +249,4 @@ scheduler_events = {
 #	"ury_mosaic.auth.validate"
 # ]
 
-website_route_rules = [{'from_route': '/URYMosaic/<path:app_path>', 'to_route': 'URYMosaic'},]
+website_route_rules = [{'from_route': '/idarakds/<path:app_path>', 'to_route': 'idarakds'},]
